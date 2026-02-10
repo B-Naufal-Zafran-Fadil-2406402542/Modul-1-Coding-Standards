@@ -26,3 +26,24 @@ Berdasarkan evaluasi mandiri terhadap kode saat ini, berikut adalah beberapa hal
     * **Perbaikan**: Menggunakan `RedirectAttributes` untuk mengirimkan pesan sukses atau error ke halaman daftar produk agar pengguna mendapatkan umpan balik yang jelas.
 * **Validation**: Belum ada validasi input yang kuat untuk memastikan nama produk tidak kosong atau kuantitas bernilai positif.
     * **Perbaikan**: Menerapkan Bean Validation (`@NotBlank`, `@Min`) pada model `Product` dan menggunakan `@Valid` di Controller.
+
+## Reflection 2
+
+### Unit Testing & Code Coverage
+
+Setelah mengimplementasikan unit test untuk model dan repository, saya merasa jauh lebih aman dan percaya diri dalam melakukan perubahan kode karena setiap fitur dasar telah memiliki jaring pengaman otomatis. Menurut saya, jumlah unit test yang dibuat dalam satu kelas haruslah cukup untuk mencakup seluruh alur logika, baik itu skenario sukses maupun skenario gagal (negative cases). Untuk memastikan bahwa pengujian kita sudah memadai, kita dapat menggunakan metrik *code coverage* yang membantu mengidentifikasi bagian kode mana yang belum tersentuh oleh pengujian sama sekali. Namun, sangat penting untuk dipahami bahwa mencapai 100% *code coverage* bukan berarti kode kita sepenuhnya bebas dari bug atau kesalahan logika. *Code coverage* hanyalah indikator kuantitatif yang menunjukkan baris mana yang dieksekusi selama tes, tetapi tidak menjamin kualitas asersi atau validasi terhadap berbagai variasi input dan kondisi ekstrem yang mungkin terjadi di dunia nyata. Oleh karena itu, selain mengejar angka *coverage*, kita juga harus fokus pada kualitas skenario pengujian yang relevan.
+
+### Functional Testing & Clean Code
+
+Berdasarkan pengamatan saya terhadap pembuatan *functional test suite* baru (seperti pengujian jumlah item di daftar produk), menulis ulang prosedur *setup* dan variabel instansi yang sama persis akan sangat menurunkan kualitas dan kebersihan kode. Masalah utama yang muncul dari pendekatan ini adalah terjadinya redundansi kode atau pelanggaran prinsip **DRY (Don't Repeat Yourself)**. Duplikasi kode semacam ini membuat pemeliharaan menjadi sulit; apabila di masa depan terdapat perubahan konfigurasi port atau URL dasar, kita harus mengubahnya di setiap file pengujian satu per satu, yang mana sangat rawan akan kesalahan manusia (*human error*). Selain itu, hal ini membuat struktur proyek terlihat berantakan dan tidak profesional.
+
+Untuk meningkatkan kualitas kode agar lebih bersih (*clean code*), saya menyarankan penerapan konsep **inheritance** dalam pengujian. Kita dapat membuat sebuah *Base Class* fungsional (misalnya `FunctionalTest.java`) yang berisi semua konfigurasi umum seperti `@LocalServerPort`, `@Value` untuk base URL, dan metode `@BeforeEach` untuk inisialisasi. Dengan cara ini, kelas pengujian lainnya seperti `HomePageFunctionalTest`, `CreateProductFunctionalTest`, dan kelas baru lainnya hanya perlu melakukan *extends* ke *Base Class* tersebut. Pendekatan ini membuat kode menjadi lebih modular, mudah dibaca, dan jauh lebih mudah untuk dikelola dalam jangka panjang.
+
+---
+
+### Penjelasan Tambahan Terkait Struktur Proyek
+
+Berikut adalah rangkuman perbaikan yang telah dilakukan untuk memenuhi kriteria rubrik:
+* **Correctness & Creativity**: Mengimplementasikan `FunctionalTest.java` sebagai *base class* untuk menghindari duplikasi kode dan mempercantik tampilan halaman menggunakan Bootstrap 5 tanpa merusak pengujian fungsional.
+* **Robust Testing**: Menambahkan pengujian fungsional untuk fitur *Delete* dengan penanganan `NoSuchElementException` menggunakan XPath yang dinamis dan sinkronisasi `Thread.sleep`.
+* **Clean Code**: Menghapus penggunaan `@MockBean` yang sudah *deprecated* pada Spring Boot 3.4.0 dan beralih ke Mockito murni agar kode tetap *up-to-date*.
