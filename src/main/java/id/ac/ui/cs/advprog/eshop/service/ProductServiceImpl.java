@@ -35,7 +35,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductData(Product product) {
+    public void update(Product product) {
         productRepository.updateProductData(product);
+    }
+
+    @Override
+    public void delete(String productId) {
+        productRepository.deleteProductById(productId);
     }
 }

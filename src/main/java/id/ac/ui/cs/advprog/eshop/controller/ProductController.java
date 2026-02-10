@@ -44,18 +44,27 @@ public class ProductController {
         try {
             Product product = service.getProductById(productId);
             model.addAttribute("product", product);
+            return "editProduct";
         }
         catch (ProductNotFoundException e) {
             return "redirect:/product/list";
         }
-        return "editProduct";
     }
 
     @PostMapping("/edit")
     public String editProductPost(@ModelAttribute Product product) {
-        service.updateProductData(product);
+        service.update(product);
         return "redirect:list";
     }
 
+    @PostMapping("/delete/{productId}")
+    public String deleteProduct(@PathVariable String productId) {
+        try {
+            service.delete(productId);
+        } catch (ProductNotFoundException e) {
+            System.out.println("Delete failed: " + e.getMessage());
+        }
+        return "redirect:/product/list";
+    }
 }
 
