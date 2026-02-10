@@ -20,7 +20,7 @@ public class ProductController {
     public String createProductPage(Model model) {
         Product product = new Product();
         model.addAttribute("product", product);
-        return "createPrduct";
+        return "createProduct";
     }
 
     @PostMapping("/create")
@@ -32,7 +32,7 @@ public class ProductController {
     @GetMapping("/list")
     public String productListPage(Model model) {
         List<Product> allProducts = service.findAll();
-        model.addAttribute("prodcts", allProducts);
+        model.addAttribute("products", allProducts);
         return "productList";
     }
 
