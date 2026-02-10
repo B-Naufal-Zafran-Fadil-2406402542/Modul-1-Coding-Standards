@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.controller;
 
+import id.ac.ui.cs.advprog.eshop.exception.ProductNotFoundException;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/product")
@@ -25,6 +27,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public String createProductPost(@ModelAttribute Product product, Model model) {
+        product.setProductId(UUID.randomUUID().toString());
         service.create(product);
         return "redirect:list";
     }
@@ -36,4 +39,23 @@ public class ProductController {
         return "productList";
     }
 
+    @GetMapping("/edit/{productId}")
+    public String editProductPage(@PathVariable String productId, Model model) {
+        try {
+            Product product = service.getProductById(productId);
+            model.addAttribute("product", product);
+        }
+        catch (ProductNotFoundException e) {
+            return "redirect:/product/list";
+        }
+        return "editProduct";
+    }
+
+    @PostMapping("/edit")
+    public String editProductPost(@ModelAttribute Product product) {
+        service.updateProductData(product);
+        return "redirect:list";
+    }
+
 }
+
